@@ -2,12 +2,16 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\Models\Product;
+use App\Models\Category;
+use App\Models\Order;
 use App\Http\Controllers\Controller;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 
 class LoginController extends Controller
 {
+    
     /*
     |--------------------------------------------------------------------------
     | Login Controller
@@ -34,7 +38,15 @@ class LoginController extends Controller
      * @return void
      */
     public function __construct()
-    {
-        $this->middleware('guest')->except('logout');
-    }
+{
+    $products = Product::all();
+    $categories = Category::all();
+    
+    $this->middleware('guest')->except('logout');
+    
+    // Pasar las variables a la vista
+    view()->share('products', $products);
+    view()->share('categories', $categories);
+}
+
 }

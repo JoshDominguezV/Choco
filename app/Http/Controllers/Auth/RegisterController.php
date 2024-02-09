@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\Models\Product;
+use App\Models\Category;
+use App\Models\Order;
 use App\Http\Controllers\Controller;
 use App\Providers\RouteServiceProvider;
 use App\Models\User;
@@ -38,6 +41,11 @@ class RegisterController extends Controller
      */
     public function __construct()
     {
+        $products = Product::all();
+    $categories = Category::all();
+        // Pasar las variables a la vista
+    view()->share('products', $products);
+    view()->share('categories', $categories);
         $this->middleware('guest');
     }
 
@@ -51,8 +59,8 @@ class RegisterController extends Controller
     {
         return Validator::make($data, [
             'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
+            'email' => ['required', 'string', 'max:255', 'unique:users'],
         ]);
     }
 
@@ -66,8 +74,8 @@ class RegisterController extends Controller
     {
         return User::create([
             'name' => $data['name'],
-            'email' => $data['email'],
             'password' => Hash::make($data['password']),
+            'email' => $data['email'],
         ]);
     }
 }

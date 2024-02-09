@@ -2,10 +2,21 @@
 
 @section('content')
     <div class="container">
+        @if (session('success'))
+            <div class="alert alert-success mt-3" role="alert">
+                {{ session('success') }}
+            </div>
+        @elseif(session('error'))
+            <div class="alert alert-danger mt-3" role="alert">
+                {{ session('error') }}
+            </div>
+        @endif
         <h1>Productos</h1>
 
+        <!-- Botón para abrir el modal de crear producto -->
         <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalCrearProducto">Crear Producto</button>
 
+        <!-- Tabla para mostrar los productos -->
         <table class="table mt-4">
             <thead>
                 <tr>
@@ -18,6 +29,7 @@
                 </tr>
             </thead>
             <tbody>
+                <!-- Iterar a través de los productos y mostrarlos en la tabla -->
                 @foreach ($products as $product)
                     <tr>
                         <td>{{ $product->id }}</td>
@@ -26,11 +38,13 @@
                         <td>${{ number_format($product->price, 2) }}</td>
                         <td>{{ $product->category->name }}</td>
                         <td>
+                            <!-- Formulario para abrir el modal de edición -->
                             <form style="display: inline-block;">
                                 @csrf
                                 @method('DELETE')
                                 <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalEditarProducto{{ $product->id }}">Editar</button>
                             </form>
+                            <!-- Formulario para eliminar el producto -->
                             <form action="{{ route('products.destroy', $product->id) }}" method="POST" style="display: inline-block;">
                                 @csrf
                                 @method('DELETE')
@@ -48,6 +62,7 @@
                                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                 </div>
                                 <div class="modal-body">
+                                    <!-- Formulario para editar el producto -->
                                     <form action="{{ route('products.update', $product->id) }}" method="POST">
                                         @csrf
                                         @method('PUT')
@@ -71,6 +86,7 @@
                                         <div class="form-group">
                                             <label for="categoria">Categoría</label>
                                             <select name="categoria" id="categoria" class="form-control">
+                                                <!-- Iterar a través de las categorías para seleccionar la categoría actual -->
                                                 @foreach ($categories as $category)
                                                     <option value="{{ $category->id }}" @if ($category->id === $product->category_id) selected @endif>{{ $category->name }}</option>
                                                 @endforeach
@@ -96,6 +112,7 @@
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
+                        <!-- Formulario para crear un nuevo producto -->
                         <form action="{{ route('products.store') }}" method="POST">
                             @csrf
 
@@ -118,8 +135,9 @@
                             <div class="form-group">
                                 <label for="categoria">Categoría</label>
                                 <select name="categoria" id="categoria" class="form-control">
+                                    <!-- Iterar a través de las categorías para seleccionar la categoría predeterminada -->
                                     @foreach ($categories as $category)
-                                        <option value="{{ $category->id }}" @if ($category->id === $product->category_id) selected @endif>{{ $category->name }}</option>
+                                        <option value="{{ $category->id }}">{{ $category->name }}</option>
                                     @endforeach
                                 </select>
                             </div>
